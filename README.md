@@ -1,2 +1,2 @@
 # Project-Glass
-Project Glass (Search)
+Project Glass Search
