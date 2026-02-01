@@ -237,9 +237,9 @@ Issues and pull requests are welcome!
 
 ## 🔗 Links
 
-- **GitHub**: [github.com/TheCoderr28/GlassBrowser](https://github.com/TheCoderr28/GlassBrowser)
-- **Releases**: [Download Latest](https://github.com/TheCoderr28/GlassBrowser/releases)
-- **Developer**: [@Seperate_Acc](https://x.com/seperate_acc)
+- **GitHub**: <a href="https://github.com/TheCoderr28/GlassBrowser" target="_blank">github.com/TheCoderr28/GlassBrowser</a>
+- **Releases**: <a href="https://github.com/TheCoderr28/GlassBrowser/releases" target="_blank">Download Latest</a>
+- **Developer**: <a href="https://x.com/seperate_acc" target="_blank">@Seperate_Acc</a>
 
 ---
 
