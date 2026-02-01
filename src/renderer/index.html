@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com data:; img-src * data:; connect-src *;">
+  <title>GlassBrowser</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="browser-container">
+    <!-- Title Bar -->
+    <div class="title-bar" id="titleBar">
+      <div class="title-bar-drag">
+        <span class="app-title">
+          <i class="fas fa-globe"></i>
+          GlassBrowser
+        </span>
+      </div>
+      <div class="window-controls">
+        <button class="window-btn minimize" id="minimizeBtn" title="Minimieren">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button class="window-btn maximize" id="maximizeBtn" title="Maximieren">
+          <i class="fas fa-square"></i>
+        </button>
+        <button class="window-btn close" id="closeBtn" title="Schließen">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar" id="tabBar">
+      <div class="tabs-container" id="tabsContainer">
+        <!-- Tabs werden hier dynamisch eingefügt -->
+      </div>
+      <button class="new-tab-btn" id="newTabBtn" title="Neuer Tab">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+      <div class="nav-controls">
+        <button class="nav-btn" id="backBtn" title="Zurück" disabled>
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="nav-btn" id="forwardBtn" title="Vorwärts" disabled>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <button class="nav-btn" id="refreshBtn" title="Aktualisieren">
+          <i class="fas fa-redo"></i>
+        </button>
+        <button class="nav-btn" id="homeBtn" title="Startseite">
+          <i class="fas fa-home"></i>
+        </button>
+      </div>
+
+      <div class="url-bar-container">
+        <div class="security-indicator" id="securityIndicator">
+          <i class="fas fa-lock"></i>
+        </div>
+        <input type="text" class="url-input" id="urlInput" placeholder="Suchen oder URL eingeben..." autocomplete="off">
+        <button class="url-btn bookmark-btn" id="bookmarkBtn" title="Lesezeichen hinzufügen">
+          <i class="far fa-star"></i>
+        </button>
+      </div>
+
+      <div class="nav-tools">
+        <button class="nav-btn" id="bookmarksBtn" title="Lesezeichen">
+          <i class="fas fa-bookmark"></i>
+        </button>
+        <button class="nav-btn" id="historyBtn" title="Verlauf">
+          <i class="fas fa-history"></i>
+        </button>
+        <button class="nav-btn" id="downloadsBtn" title="Downloads">
+          <i class="fas fa-download"></i>
+        </button>
+        <button class="nav-btn" id="settingsBtn" title="Einstellungen">
+          <i class="fas fa-cog"></i>
+        </button>
+        <button class="nav-btn user-btn" id="userBtn" title="Konto">
+          <i class="fas fa-user-circle"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bookmarks Bar -->
+    <div class="bookmarks-bar" id="bookmarksBar">
+      <!-- Lesezeichen werden hier dynamisch eingefügt -->
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area" id="contentArea">
+      <!-- Webviews werden hier dynamisch eingefügt -->
+      
+      <!-- Start Page -->
+      <div class="start-page" id="startPage">
+        <div class="background-effects" id="bgEffects"></div>
+        <div class="start-content">
+          <h1 class="start-title">
+            <i class="fas fa-globe"></i>
+            GlassBrowser
+          </h1>
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Google-Suche oder URL eingeben">
+          </div>
+          <div class="quick-links" id="quickLinks">
+            <!-- Quick links werden hier eingefügt -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Quick Link Modal -->
+      <div class="modal-overlay" id="addLinkModal">
+        <div class="modal">
+          <div class="modal-header">
+            <h3><i class="fas fa-plus-circle"></i> Schnellzugriff hinzufügen</h3>
+            <button class="modal-close" id="closeAddLinkModal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" id="quickLinkName" placeholder="z.B. Meine Seite">
+            </div>
+            <div class="form-group">
+              <label>URL</label>
+              <input type="url" id="quickLinkUrl" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+              <label>Icon-Farbe</label>
+              <div class="quick-link-colors" id="quickLinkColors">
+                <div class="ql-color active" data-color="#6366f1" style="background: #6366f1"></div>
+                <div class="ql-color" data-color="#ec4899" style="background: #ec4899"></div>
+                <div class="ql-color" data-color="#10b981" style="background: #10b981"></div>
+                <div class="ql-color" data-color="#f59e0b" style="background: #f59e0b"></div>
+                <div class="ql-color" data-color="#3b82f6" style="background: #3b82f6"></div>
+                <div class="ql-color" data-color="#ef4444" style="background: #ef4444"></div>
+                <div class="ql-color" data-color="#8b5cf6" style="background: #8b5cf6"></div>
+                <div class="ql-color" data-color="#06b6d4" style="background: #06b6d4"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="modal-btn cancel" id="cancelAddLink">Abbrechen</button>
+            <button class="modal-btn primary" id="saveQuickLink">
+              <i class="fas fa-plus"></i> Hinzufügen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Panels -->
+    <div class="sidebar" id="sidebar">
+      <!-- Bookmarks Panel -->
+      <div class="panel bookmarks-panel" id="bookmarksPanel">
+        <div class="panel-header">
+          <h3><i class="fas fa-bookmark"></i> Lesezeichen</h3>
+          <button class="panel-close" data-panel="bookmarksPanel">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="panel-content">
+          <div class="bookmark-list" id="bookmarkList">
+            <!-- Lesezeichen werden hier eingefügt -->
+          </div>
+        </div>
+      </div>
+
+      <!-- History Panel -->
+      <div class="panel history-panel" id="historyPanel">
+        <div class="panel-header">
+          <h3><i class="fas fa-history"></i> Verlauf</h3>
+          <button class="panel-close" data-panel="historyPanel">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="panel-actions">
+          <button class="action-btn" id="clearHistoryBtn">
+            <i class="fas fa-trash"></i> Verlauf löschen
+          </button>
+        </div>
+        <div class="panel-content">
+          <div class="history-list" id="historyList">
+            <!-- Verlauf wird hier eingefügt -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Downloads Panel -->
+      <div class="panel downloads-panel" id="downloadsPanel">
+        <div class="panel-header">
+          <h3><i class="fas fa-download"></i> Downloads</h3>
+          <button class="panel-close" data-panel="downloadsPanel">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="panel-actions">
+          <button class="action-btn" id="openDownloadsFolderBtn">
+            <i class="fas fa-folder-open"></i> Ordner öffnen
+          </button>
+          <button class="action-btn" id="clearDownloadsBtn">
+            <i class="fas fa-trash"></i> Liste leeren
+          </button>
+        </div>
+        <div class="panel-content">
+          <div class="downloads-list" id="downloadsList">
+            <!-- Downloads werden hier eingefügt -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="panel settings-panel" id="settingsPanel">
+        <div class="panel-header">
+          <h3><i class="fas fa-cog"></i> Einstellungen</h3>
+          <button class="panel-close" data-panel="settingsPanel">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="panel-content">
+          <div class="settings-section">
+            <h4>Allgemein</h4>
+            <div class="setting-item">
+              <label>Startseite</label>
+              <input type="text" class="setting-input" id="homepageInput" placeholder="https://www.google.com">
+            </div>
+            <div class="setting-item">
+              <label>Suchmaschine</label>
+              <select class="setting-select" id="searchEngineSelect">
+                <option value="google">Google</option>
+                <option value="bing">Bing</option>
+                <option value="duckduckgo">DuckDuckGo</option>
+                <option value="ecosia">Ecosia</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Erscheinungsbild</h4>
+            <div class="setting-item">
+              <label>Design</label>
+              <select class="setting-select" id="themeSelect">
+                <option value="dark">Dunkel</option>
+                <option value="light">Hell</option>
+                <option value="auto">Automatisch</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label>Akzentfarbe</label>
+              <div class="color-presets" id="colorPresets">
+                <!-- Standard-Farben -->
+                <div class="color-preset active" data-hue="239" style="background: linear-gradient(135deg, hsl(239, 84%, 67%), hsl(259, 84%, 67%))" title="Indigo"></div>
+                <div class="color-preset" data-hue="330" style="background: linear-gradient(135deg, hsl(330, 84%, 67%), hsl(350, 84%, 67%))" title="Pink"></div>
+                <div class="color-preset" data-hue="160" style="background: linear-gradient(135deg, hsl(160, 84%, 45%), hsl(180, 84%, 45%))" title="Türkis"></div>
+                <div class="color-preset" data-hue="30" style="background: linear-gradient(135deg, hsl(30, 84%, 55%), hsl(50, 84%, 55%))" title="Orange"></div>
+                <div class="color-preset" data-hue="270" style="background: linear-gradient(135deg, hsl(270, 84%, 67%), hsl(290, 84%, 67%))" title="Violett"></div>
+                <div class="color-preset" data-hue="200" style="background: linear-gradient(135deg, hsl(200, 84%, 55%), hsl(220, 84%, 55%))" title="Blau"></div>
+                <div class="color-preset" data-hue="120" style="background: linear-gradient(135deg, hsl(120, 60%, 45%), hsl(140, 60%, 45%))" title="Grün"></div>
+                <div class="color-preset" data-hue="0" style="background: linear-gradient(135deg, hsl(0, 84%, 60%), hsl(20, 84%, 60%))" title="Rot"></div>
+                <!-- Neon-Farben -->
+                <div class="color-preset" data-hue="180" style="background: linear-gradient(135deg, hsl(180, 100%, 50%), hsl(200, 100%, 50%))" title="Neon Cyan"></div>
+                <div class="color-preset" data-hue="300" style="background: linear-gradient(135deg, hsl(300, 100%, 60%), hsl(320, 100%, 60%))" title="Neon Magenta"></div>
+                <div class="color-preset" data-hue="60" style="background: linear-gradient(135deg, hsl(60, 100%, 50%), hsl(80, 100%, 50%))" title="Neon Gelb"></div>
+                <div class="color-preset" data-hue="140" style="background: linear-gradient(135deg, hsl(140, 100%, 45%), hsl(160, 100%, 45%))" title="Neon Grün"></div>
+                <!-- Pastell-Farben -->
+                <div class="color-preset" data-hue="350" style="background: linear-gradient(135deg, hsl(350, 70%, 75%), hsl(370, 70%, 75%))" title="Pastell Rosa"></div>
+                <div class="color-preset" data-hue="210" style="background: linear-gradient(135deg, hsl(210, 70%, 75%), hsl(230, 70%, 75%))" title="Pastell Blau"></div>
+                <div class="color-preset" data-hue="130" style="background: linear-gradient(135deg, hsl(130, 50%, 70%), hsl(150, 50%, 70%))" title="Pastell Grün"></div>
+                <div class="color-preset" data-hue="280" style="background: linear-gradient(135deg, hsl(280, 60%, 75%), hsl(300, 60%, 75%))" title="Pastell Lila"></div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <label>Transparenz</label>
+              <input type="range" class="setting-range" id="transparencyRange" min="0.5" max="1" step="0.05" value="0.85">
+            </div>
+            <div class="setting-item">
+              <label>Unschärfe-Intensität</label>
+              <input type="range" class="setting-range" id="blurRange" min="0" max="40" step="4" value="24">
+            </div>
+            <div class="setting-item">
+              <label>Tab-Ecken</label>
+              <div class="shape-selector" id="shapeSelector">
+                <div class="shape-option" data-radius="0" title="Eckig">
+                  <div class="shape-preview"></div>
+                </div>
+                <div class="shape-option" data-radius="4" title="Leicht gerundet">
+                  <div class="shape-preview"></div>
+                </div>
+                <div class="shape-option active" data-radius="8" title="Gerundet">
+                  <div class="shape-preview"></div>
+                </div>
+                <div class="shape-option" data-radius="12" title="Stark gerundet">
+                  <div class="shape-preview"></div>
+                </div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <label>UI-Elemente Form</label>
+              <div class="ui-shape-selector" id="uiShapeSelector">
+                <div class="ui-shape-option" data-shape="square" title="Eckig">
+                  <div class="ui-shape-preview square"></div>
+                  <span>Eckig</span>
+                </div>
+                <div class="ui-shape-option active" data-shape="rounded" title="Gerundet">
+                  <div class="ui-shape-preview rounded"></div>
+                  <span>Gerundet</span>
+                </div>
+                <div class="ui-shape-option" data-shape="pill" title="Pillenform">
+                  <div class="ui-shape-preview pill"></div>
+                  <span>Pill</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>Schrift & Anzeige</h4>
+            <div class="setting-item">
+              <label>Schriftart</label>
+              <select class="setting-select" id="fontSelect">
+                <option value="system">System Standard</option>
+                <option value="inter">Inter</option>
+                <option value="roboto">Roboto</option>
+                <option value="poppins">Poppins</option>
+                <option value="fira">Fira Code</option>
+                <option value="ubuntu">Ubuntu</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label>Schriftgröße</label>
+              <input type="range" class="setting-range" id="fontSizeRange" min="12" max="18" step="1" value="14">
+              <span class="range-value" id="fontSizeValue">14px</span>
+            </div>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="compactModeCheck">
+                Kompakter Modus (weniger Abstände)
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>Animationen & Effekte</h4>
+            <div class="setting-item">
+              <label>Animationsgeschwindigkeit</label>
+              <select class="setting-select" id="animationSpeedSelect">
+                <option value="slow">Langsam</option>
+                <option value="normal" selected>Normal</option>
+                <option value="fast">Schnell</option>
+                <option value="off">Aus</option>
+              </select>
+            </div>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="glowEffectsCheck" checked>
+                Leuchteffekte aktivieren
+              </label>
+            </div>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="hoverAnimationsCheck" checked>
+                Hover-Animationen aktivieren
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>Startseiten-Hintergrund</h4>
+            <div class="setting-item">
+              <label>Hintergrund-Stil</label>
+              <div class="bg-style-selector" id="bgStyleSelector">
+                <div class="bg-style-option active" data-style="gradient" title="Gradient">
+                  <div class="bg-preview gradient"></div>
+                  <span>Gradient</span>
+                </div>
+                <div class="bg-style-option" data-style="particles" title="Partikel">
+                  <div class="bg-preview particles"></div>
+                  <span>Partikel</span>
+                </div>
+                <div class="bg-style-option" data-style="waves" title="Wellen">
+                  <div class="bg-preview waves"></div>
+                  <span>Wellen</span>
+                </div>
+                <div class="bg-style-option" data-style="mesh" title="Mesh">
+                  <div class="bg-preview mesh"></div>
+                  <span>Mesh</span>
+                </div>
+                <div class="bg-style-option" data-style="custom" title="Eigenes Bild">
+                  <div class="bg-preview custom"><i class="fas fa-image"></i></div>
+                  <span>Eigenes</span>
+                </div>
+              </div>
+            </div>
+            <div class="setting-item" id="customBgSetting" style="display: none;">
+              <label>Eigenes Hintergrundbild</label>
+              <div class="custom-bg-upload">
+                <input type="file" id="customBgInput" accept="image/*" hidden>
+                <button class="action-btn" id="uploadBgBtn" style="width: 100%;">
+                  <i class="fas fa-upload"></i> Bild auswählen
+                </button>
+                <button class="action-btn" id="removeBgBtn" style="display: none; margin-top: 8px; width: 100%;">
+                  <i class="fas fa-trash"></i> Bild entfernen
+                </button>
+              </div>
+            </div>
+            <div class="setting-item">
+              <label>Hintergrund-Deckkraft</label>
+              <input type="range" class="setting-range" id="bgOpacityRange" min="0" max="100" step="5" value="100">
+              <span class="range-value" id="bgOpacityValue">100%</span>
+            </div>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="animatedBgCheck" checked>
+                Hintergrund animieren
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>Tab-Verhalten</h4>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="tabPreviewCheck">
+                Tab-Vorschau beim Hover
+              </label>
+            </div>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="confirmCloseCheck">
+                Bestätigung beim Schließen mehrerer Tabs
+              </label>
+            </div>
+            <div class="setting-item">
+              <label>Maximale Tab-Breite</label>
+              <input type="range" class="setting-range" id="tabWidthRange" min="120" max="300" step="20" value="240">
+              <span class="range-value" id="tabWidthValue">240px</span>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>Navigationsleiste</h4>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="showBookmarksBarCheck" checked>
+                Lesezeichen-Leiste anzeigen
+              </label>
+            </div>
+            <div class="setting-item">
+              <label>URL-Leisten-Stil</label>
+              <select class="setting-select" id="urlBarStyleSelect">
+                <option value="rounded">Abgerundet (Standard)</option>
+                <option value="pill">Pillenform</option>
+                <option value="square">Eckig</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Datenschutz</h4>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="doNotTrackCheck" checked>
+                Do Not Track senden
+              </label>
+            </div>
+            <div class="setting-item checkbox">
+              <label>
+                <input type="checkbox" id="clearOnExitCheck">
+                Verlauf beim Beenden löschen
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User/Account Panel -->
+      <div class="panel user-panel" id="userPanel">
+        <div class="panel-header">
+          <h3><i class="fas fa-user-circle"></i> Konto</h3>
+          <button class="panel-close" data-panel="userPanel">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="panel-content">
+          <!-- Login Form -->
+          <div class="auth-container" id="authContainer">
+            <div class="auth-tabs">
+              <button class="auth-tab active" data-tab="login">Anmelden</button>
+              <button class="auth-tab" data-tab="register">Registrieren</button>
+            </div>
+            
+            <form class="auth-form" id="loginForm">
+              <div class="form-group">
+                <label>E-Mail</label>
+                <input type="email" id="loginEmail" required>
+              </div>
+              <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" id="loginPassword" required>
+              </div>
+              <button type="submit" class="auth-submit-btn">Anmelden</button>
+              <div class="auth-divider">
+                <span>oder</span>
+              </div>
+              <button type="button" class="google-auth-btn" id="googleLoginBtn">
+                <i class="fab fa-google"></i> Mit Google anmelden
+              </button>
+            </form>
+
+            <form class="auth-form hidden" id="registerForm">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="registerName" required>
+              </div>
+              <div class="form-group">
+                <label>E-Mail</label>
+                <input type="email" id="registerEmail" required>
+              </div>
+              <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" id="registerPassword" required minlength="6">
+              </div>
+              <div class="form-group">
+                <label>Passwort bestätigen</label>
+                <input type="password" id="registerPasswordConfirm" required>
+              </div>
+              <button type="submit" class="auth-submit-btn">Registrieren</button>
+            </form>
+          </div>
+
+          <!-- User Profile (when logged in) -->
+          <div class="user-profile hidden" id="userProfile">
+            <div class="profile-avatar" id="profileAvatar">
+              <i class="fas fa-user-circle" id="profileAvatarIcon"></i>
+              <img id="profileAvatarImg" src="" alt="" style="display: none;">
+              <div class="profile-avatar-edit">
+                <input type="file" id="profileImageInput" accept="image/*" hidden>
+                <button class="edit-avatar-btn" id="editAvatarBtn" title="Profilbild ändern">
+                  <i class="fas fa-camera"></i>
+                </button>
+              </div>
+            </div>
+            <div class="profile-info">
+              <h4 id="profileName">Benutzer</h4>
+              <p id="profileEmail">email@example.com</p>
+            </div>
+            <div class="sync-status">
+              <div class="sync-toggle">
+                <label>
+                  <input type="checkbox" id="syncToggle">
+                  Daten synchronisieren
+                </label>
+              </div>
+              <p class="sync-info">Lesezeichen und Einstellungen werden mit Ihrem Konto synchronisiert.</p>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+              <i class="fas fa-sign-out-alt"></i> Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading-bar" id="loadingBar"></div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+      <div class="context-menu-item" data-action="open-new-tab">
+        <i class="fas fa-external-link-alt"></i> In neuem Tab öffnen
+      </div>
+      <div class="context-menu-item" data-action="copy-link">
+        <i class="fas fa-copy"></i> Link kopieren
+      </div>
+      <div class="context-menu-divider"></div>
+      <div class="context-menu-item" data-action="add-bookmark">
+        <i class="fas fa-star"></i> Zu Lesezeichen hinzufügen
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Tab Preview Tooltip -->
+    <div class="tab-preview-tooltip" id="tabPreviewTooltip">
+      <div class="tab-preview-image">
+        <img id="previewImage" alt="" style="display: none;">
+        <i class="fas fa-globe preview-placeholder"></i>
+      </div>
+      <div class="tab-preview-info">
+        <p class="preview-title" id="previewTitle">Tab-Titel</p>
+        <p class="preview-url" id="previewUrl">URL</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/app.js"></script>
+</body>
+</html>
