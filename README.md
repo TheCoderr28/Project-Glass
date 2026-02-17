@@ -99,7 +99,7 @@ GlassBrowser
 ### Option 3: Build from Source
 ```bash
 # Clone the repository
-git clone https://github.com/YourUsername/GlassBrowser.git
+git clone https://github.com/TheCoderr28/Project-Glass.git
 
 # Navigate to directory
 cd GlassBrowser
